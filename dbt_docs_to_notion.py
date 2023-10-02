@@ -63,11 +63,11 @@ def main():
   print(f'Model records to write: {model_records_to_write}')
 
   ###### load nodes from dbt docs ######
-  with open('target/manifest.json', encoding='utf-8') as f:
+  with open('bokksu/target/manifest.json', encoding='utf-8') as f:
     manifest = json.load(f)
     manifest_nodes = manifest['nodes']
 
-  with open('target/catalog.json', encoding='utf-8') as f:
+  with open('bokksu/target/catalog.json', encoding='utf-8') as f:
     catalog = json.load(f)
     catalog_nodes = catalog['nodes']
 
