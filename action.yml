@@ -1,5 +1,8 @@
 name: 'dbt-docs-to-notion'
 description: 'Exports dbt model docs to a Notion database'
+defaults:
+  run:
+    working-directory: ./bokksu
 branding:
   icon: 'book-open'
   color: 'orange'
