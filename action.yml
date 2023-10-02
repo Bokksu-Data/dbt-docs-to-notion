@@ -1,8 +1,5 @@
 name: 'dbt-docs-to-notion'
 description: 'Exports dbt model docs to a Notion database'
-defaults:
-  run:
-    working-directory: ./bokksu
 branding:
   icon: 'book-open'
   color: 'orange'
@@ -31,6 +28,7 @@ inputs:
     description: 'Notion token api for integration to use (pass using secrets)'
     required: true
 runs:
+  working-directory: ./bokksu
   using: 'composite'
   steps: 
     - name: Install Python
