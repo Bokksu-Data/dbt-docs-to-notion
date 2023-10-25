@@ -225,16 +225,9 @@ def main():
                   {
                     "type": "text",
                     "text": {
-                      "content": (
-                        column_descriptions[col_name.lower()]
-                        if col_name.lower() in column_descriptions
-                        else ''
-                      )
+                      "content": col_data['comment']
                     },
-                    "plain_text": (
-                      column_descriptions[col_name.lower()]
-                      if col_name.lower() in column_descriptions
-                      else ''
+                    "plain_text": col_data['comment']
                     )
                   }
                 ]
