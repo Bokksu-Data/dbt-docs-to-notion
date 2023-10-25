@@ -156,6 +156,7 @@ def main():
                             for name, metadata
                             in data['columns'].items()}
 
+      # first row is the column headers 
       columns_table_children_obj = [
         {
           "type": "table_row",
@@ -225,9 +226,9 @@ def main():
                   {
                     "type": "text",
                     "text": {
-                      "content": col_data['comment']
+                      "content": col_data['description']
                     },
-                    "plain_text": col_data['comment']
+                    "plain_text": col_data['description']
                     )
                   }
                 ]
