@@ -229,7 +229,6 @@ def main():
                       "content": col_data['description']
                     },
                     "plain_text": col_data['description']
-                    )
                   }
                 ]
               ]
