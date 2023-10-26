@@ -21,6 +21,7 @@ def make_request(endpoint, querystring='', method='GET', **request_kwargs):
     'Notion-Version': '2022-02-22'
   }
   url = f'https://api.notion.com/v1/{endpoint}{querystring}'
+  print('URL: ' url)
   resp = requests.request(method, url, headers=headers, **request_kwargs)
 
   if not resp.status_code == 200:
