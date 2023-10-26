@@ -226,9 +226,9 @@ def main():
                   {
                     "type": "text",
                     "text": {
-                      "content": col_data['description']
+                      "content": col_data['comment']
                     },
-                    "plain_text": col_data['description']
+                    "plain_text": col_data['comment']
                   }
                 ]
               ]
