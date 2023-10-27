@@ -236,44 +236,45 @@ def main():
             }
           }
         )
-      if len(col_names_and_data) > 98:
-        # make that columns have been truncated
-        columns_table_children_obj.append(
-          {
-            "type": "table_row",
-            "table_row": {
-              "cells": [
-                [
-                  {
-                    "type": "text",
-                    "text": {
-                      "content": "..."
-                    },
-                    "plain_text": "..."
-                  }
-                ],
-                [
-                  {
-                    "type": "text",
-                    "text": {
-                      "content": "..."
-                    },
-                    "plain_text": "..."
-                  }
-                ],
-                [
-                  {
-                    "type": "text",
-                    "text": {
-                      "content": "..."
-                    },
-                    "plain_text": "..."
-                  }
-                ]
-              ]
-            }
-          }
-        )
+      # comment out column database row limit 
+      # if len(col_names_and_data) > 98:
+      #   # make that columns have been truncated
+      #   columns_table_children_obj.append(
+      #     {
+      #       "type": "table_row",
+      #       "table_row": {
+      #         "cells": [
+      #           [
+      #             {
+      #               "type": "text",
+      #               "text": {
+      #                 "content": "..."
+      #               },
+      #               "plain_text": "..."
+      #             }
+      #           ],
+      #           [
+      #             {
+      #               "type": "text",
+      #               "text": {
+      #                 "content": "..."
+      #               },
+      #               "plain_text": "..."
+      #             }
+      #           ],
+      #           [
+      #             {
+      #               "type": "text",
+      #               "text": {
+      #                 "content": "..."
+      #               },
+      #               "plain_text": "..."
+      #             }
+      #           ]
+      #         ]
+      #       }
+      #     }
+      #   )
 
       record_children_obj = [
         # Table of contents
