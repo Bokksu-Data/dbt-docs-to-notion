@@ -199,7 +199,7 @@ def main():
         [[model_name, 'columns']],
         {}
       ).items())
-      for (col_name, col_data) in col_names_and_data[:98]: # notion api limit is 100 table rows
+      for (col_name, col_data) in col_names_and_data: #[:98]: # notion api limit is 100 table rows
         columns_table_children_obj.append(
           {
             "type": "table_row",
