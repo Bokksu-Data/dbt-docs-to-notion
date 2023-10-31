@@ -194,12 +194,13 @@ def main():
           }
         }
       ]
+
       col_names_and_data = list(get_paths_or_empty(
         catalog_nodes,
         [[model_name, 'columns']],
         {}
       ).items())
-      for (col_name, col_data) in col_names_and_data: #[:98]: # notion api limit is 100 table rows
+      for (col_name, col_data) in col_names_and_data: # notion api limit is 100 table rows, solution: batch arrays into lengths of 50 and make requests for each batch
         columns_table_children_obj.append(
           {
             "type": "table_row",
@@ -236,45 +237,6 @@ def main():
             }
           }
         )
-      # comment out column database row limit 
-      # if len(col_names_and_data) > 98:
-      #   # make that columns have been truncated
-      #   columns_table_children_obj.append(
-      #     {
-      #       "type": "table_row",
-      #       "table_row": {
-      #         "cells": [
-      #           [
-      #             {
-      #               "type": "text",
-      #               "text": {
-      #                 "content": "..."
-      #               },
-      #               "plain_text": "..."
-      #             }
-      #           ],
-      #           [
-      #             {
-      #               "type": "text",
-      #               "text": {
-      #                 "content": "..."
-      #               },
-      #               "plain_text": "..."
-      #             }
-      #           ],
-      #           [
-      #             {
-      #               "type": "text",
-      #               "text": {
-      #                 "content": "..."
-      #               },
-      #               "plain_text": "..."
-      #             }
-      #           ]
-      #         ]
-      #       }
-      #     }
-      #   )
 
       record_children_obj = [
         # Table of contents
@@ -365,6 +327,8 @@ def main():
           }
         }
       ]
+      
+    
 
       record_obj = {
         "parent": {
@@ -463,46 +427,95 @@ def main():
         json=query_obj
       )
 
-      if record_query_resp['results']:
-        print(f'\nupdating {model_name} record')
-        record_id = record_query_resp['results'][0]['id']
-        _record_update_resp = make_request(
-          endpoint=f'pages/{record_id}',
-          querystring='',
-          method='PATCH',
-          json=record_obj
-        )
+      if len(record_children_obj) >= 100:
 
-        # children can't be updated via record update, so we'll delete and re-add
-        record_children_resp = make_request(
-          endpoint='blocks/',
-          querystring=f'{record_id}/children',
-          method='GET'
-        )
-        for record_child in record_children_resp['results']:
-          record_child_id = record_child['id']
-          _record_child_deletion_resp = make_request(
+        batched_arrays = []
+        for i in range(0, len(record_children_obj), 50):
+            batched_arrays.append(input_array[i:i + 50])
+  
+        for array in batched_arrays:
+          if record_query_resp['results']:
+              print(f'\nupdating {model_name} record')
+              record_id = record_query_resp['results'][0]['id']
+              _record_update_resp = make_request(
+              endpoint=f'pages/{record_id}',
+              querystring='',
+              method='PATCH',
+              json=record_obj
+              )
+  
+              # children can't be updated via record update, so we'll delete and re-add
+              record_children_resp = make_request(
+              endpoint='blocks/',
+              querystring=f'{record_id}/children',
+              method='GET'
+              )
+              for record_child in record_children_resp['results']:
+                  record_child_id = record_child['id']
+                  _record_child_deletion_resp = make_request(
+                      endpoint='blocks/',
+                      querystring=record_child_id,
+                      method='DELETE'
+                  )
+  
+              _record_children_replacement_resp = make_request(
+              endpoint='blocks/',
+              querystring=f'{record_id}/children',
+              method='PATCH',
+              json={"children": array}
+              )
+  
+          else:
+              print(f'\ncreating {model_name} record')
+              record_obj['children'] = array
+              _record_creation_resp = make_request(
+              endpoint='pages/',
+              querystring='',
+              method='POST',
+              json=record_obj
+              )
+      else: 
+
+        if record_query_resp['results']:
+            print(f'\nupdating {model_name} record')
+            record_id = record_query_resp['results'][0]['id']
+            _record_update_resp = make_request(
+            endpoint=f'pages/{record_id}',
+            querystring='',
+            method='PATCH',
+            json=record_obj
+            )
+
+            # children can't be updated via record update, so we'll delete and re-add
+            record_children_resp = make_request(
             endpoint='blocks/',
-            querystring=record_child_id,
-            method='DELETE'
-          )
+            querystring=f'{record_id}/children',
+            method='GET'
+            )
+            for record_child in record_children_resp['results']:
+                record_child_id = record_child['id']
+                _record_child_deletion_resp = make_request(
+                    endpoint='blocks/',
+                    querystring=record_child_id,
+                    method='DELETE'
+                )
 
-        _record_children_replacement_resp = make_request(
-          endpoint='blocks/',
-          querystring=f'{record_id}/children',
-          method='PATCH',
-          json={"children": record_children_obj}
-        )
+            _record_children_replacement_resp = make_request(
+            endpoint='blocks/',
+            querystring=f'{record_id}/children',
+            method='PATCH',
+            json={"children": record_children_obj}
+            )
 
-      else:
-        print(f'\ncreating {model_name} record')
-        record_obj['children'] = record_children_obj
-        _record_creation_resp = make_request(
-          endpoint='pages/',
-          querystring='',
-          method='POST',
-          json=record_obj
-        )
-
+        else:
+            print(f'\ncreating {model_name} record')
+            record_obj['children'] = record_children_obj
+            _record_creation_resp = make_request(
+            endpoint='pages/',
+            querystring='',
+            method='POST',
+            json=record_obj
+            )
+        
 if __name__ == '__main__':
   main()
