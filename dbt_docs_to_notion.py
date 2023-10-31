@@ -454,9 +454,9 @@ def main():
                     querystring=record_child_id,
                     method='DELETE'
                 )
-        
-        for i in range(0, len(columns_table_children_obj), 50):
-            batched_array = columns_table_children_obj[i:i + 50]
+        batch_size = 98
+        for i in range(0, len(columns_table_children_obj), batch_size):
+            batched_array = columns_table_children_obj[i:i + batch_size]
             record_children_obj = [
                 # Table of contents
                 {
@@ -556,7 +556,7 @@ def main():
             method='POST',
             json=record_obj
             )
-            
+
       else: 
 
         if record_query_resp['results']:
