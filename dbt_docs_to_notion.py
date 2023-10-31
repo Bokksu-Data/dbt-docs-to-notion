@@ -431,7 +431,7 @@ def main():
 
         batched_arrays = []
         for i in range(0, len(record_children_obj), 50):
-            batched_arrays.append(input_array[i:i + 50])
+            batched_arrays.append(record_children_obj[i:i + 50])
   
         for array in batched_arrays:
           if record_query_resp['results']:
