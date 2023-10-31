@@ -430,8 +430,8 @@ def main():
       if len(record_children_obj) >= 100:
 
         batched_arrays = []
-        for i in range(0, len(record_children_obj), 50):
-            batched_arrays.append(record_children_obj[i:i + 50])
+        for i in range(0, len(columns_table_children_obj), 50):
+            batched_arrays.append(columns_table_children_obj[i:i + 50])
   
         for array in batched_arrays:
           if record_query_resp['results']:
