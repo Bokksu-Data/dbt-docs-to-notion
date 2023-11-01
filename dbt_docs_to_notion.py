@@ -8,8 +8,10 @@ DATABASE_PARENT_ID = os.environ['DATABASE_PARENT_ID']
 DATABASE_NAME = os.environ['DATABASE_NAME']
 NOTION_TOKEN = os.environ['NOTION_TOKEN']
 NUMERIC_ZERO_VALUE = -1
-MANIFEST_PATH = os.environ['MANIFEST_PATH']
-CATALOG_PATH = os.environ['CATALOG_PATH']
+#MANIFEST_PATH = os.environ['MANIFEST_PATH'] 
+MANIFEST_PATH = os.getenv('MANIFEST_PATH')
+CATALOG_PATH = os.getenv('CATALOG_PATH')
+#CATALOG_PATH = os.environ['CATALOG_PATH']
 
 def make_request(endpoint, querystring='', method='GET', **request_kwargs):
   time.sleep(0.34) # notion api limit is 3 requests per second
