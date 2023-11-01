@@ -50,3 +50,5 @@ runs:
         DATABASE_NAME: ${{ inputs.notion-database-name }}
         DATABASE_PARENT_ID: ${{ inputs.notion-parent-id }}
         NOTION_TOKEN: ${{ inputs.notion-token }}
+        MANIFEST_PATH: ${{ inputs.manifest-path }}
+        CATALOG_PATH: ${{ inputs.catalog-path }}
