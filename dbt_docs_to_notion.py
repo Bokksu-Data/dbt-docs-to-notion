@@ -8,8 +8,8 @@ DATABASE_PARENT_ID = os.environ['DATABASE_PARENT_ID']
 DATABASE_NAME = os.environ['DATABASE_NAME']
 NOTION_TOKEN = os.environ['NOTION_TOKEN']
 NUMERIC_ZERO_VALUE = -1
-MANIFEST_JSON = os.environ['MANIFEST_JSON']
-CATALOG_JSON = os.environ['CATALOG_JSON']
+MANIFEST_PATH = os.environ['MANIFEST_JSON']
+CATALOG_PATH = os.environ['CATALOG_JSON']
 
 def make_request(endpoint, querystring='', method='GET', **request_kwargs):
   time.sleep(0.34) # notion api limit is 3 requests per second
@@ -61,11 +61,11 @@ def main():
   print(f'Model records to write: {model_records_to_write}')
 
   ###### load nodes from dbt docs ######
-  with open(MANIFEST_JSON, encoding='utf-8') as f:
+  with open(MANIFEST_PATH, encoding='utf-8') as f:
     manifest = json.load(f)
     manifest_nodes = manifest['nodes']
 
-  with open(CATALOG_JSON, encoding='utf-8') as f:
+  with open(CATALOG_PATH, encoding='utf-8') as f:
     catalog = json.load(f)
     catalog_nodes = catalog['nodes']
 
