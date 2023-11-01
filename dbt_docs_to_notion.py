@@ -9,8 +9,8 @@ import requests
 DATABASE_PARENT_ID = os.environ['DATABASE_PARENT_ID']
 DATABASE_NAME = os.environ['DATABASE_NAME']
 NOTION_TOKEN = os.environ['NOTION_TOKEN']
-manifest_path = os.environ['MANIFEST_JSON_PATH']
-catalog_path = os.environ['CATALOG_JSON_PATH']
+manifest_path = str(os.environ['MANIFEST_JSON_PATH'])
+catalog_path = str(os.environ['CATALOG_JSON_PATH'])
 NUMERIC_ZERO_VALUE = -1
 
 def make_request(endpoint, querystring='', method='GET', **request_kwargs):
