@@ -2,15 +2,14 @@ import json
 import os
 import sys
 import time
-
 import requests
-
 
 DATABASE_PARENT_ID = os.environ['DATABASE_PARENT_ID']
 DATABASE_NAME = os.environ['DATABASE_NAME']
 NOTION_TOKEN = os.environ['NOTION_TOKEN']
 NUMERIC_ZERO_VALUE = -1
-
+MANIFEST_JSON = os.environ['MANIFEST_JSON']
+CATALOG_JSON = os.environ['CATALOG_JSON']
 
 def make_request(endpoint, querystring='', method='GET', **request_kwargs):
   time.sleep(0.34) # notion api limit is 3 requests per second
@@ -31,7 +30,6 @@ def make_request(endpoint, querystring='', method='GET', **request_kwargs):
 
   return resp.json()
 
-
 def get_paths_or_empty(parent_object, paths_array, zero_value=''):
   """Used for catalog_nodes accesses, since structure is variable"""
   for path in paths_array:
@@ -45,7 +43,6 @@ def get_paths_or_empty(parent_object, paths_array, zero_value=''):
       return obj
 
   return zero_value
-
 
 def get_owner(data, catalog_nodes, model_name):
   """
@@ -64,11 +61,11 @@ def main():
   print(f'Model records to write: {model_records_to_write}')
 
   ###### load nodes from dbt docs ######
-  with open('bokksu/target/manifest.json', encoding='utf-8') as f:
+  with open(MANIFEST_JSON, encoding='utf-8') as f:
     manifest = json.load(f)
     manifest_nodes = manifest['nodes']
 
-  with open('bokksu/target/catalog.json', encoding='utf-8') as f:
+  with open(CATALOG_JSON, encoding='utf-8') as f:
     catalog = json.load(f)
     catalog_nodes = catalog['nodes']
 
