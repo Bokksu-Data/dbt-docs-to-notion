@@ -329,8 +329,6 @@ def main():
         }
       ]
       
-    
-
       record_obj = {
         "parent": {
           "database_id": database_id
@@ -421,6 +419,7 @@ def main():
           }
         }
       }
+
       record_query_resp = make_request(
         endpoint='databases/',
         querystring=f'{database_id}/query',
@@ -428,10 +427,11 @@ def main():
         json=query_obj
       )
 
-      if len(columns_table_children_obj) >= 100:
+      if record_query_resp['results']:
+        if len(columns_table_children_obj) >= 100:
 
-        # first delete all current records
-        if record_query_resp['results']:
+            # first delete all current records
+            
             print(f'\nupdating {model_name} record')
             record_id = record_query_resp['results'][0]['id']
             _record_update_resp = make_request(
@@ -443,9 +443,9 @@ def main():
 
             # children can't be updated via record update, so we'll delete and re-add
             record_children_resp = make_request(
-            endpoint='blocks/',
-            querystring=f'{record_id}/children',
-            method='GET'
+                endpoint='blocks/',
+                querystring=f'{record_id}/children',
+                method='GET'
             )
             # delete all records
             for record_child in record_children_resp['results']:
@@ -455,151 +455,145 @@ def main():
                     querystring=record_child_id,
                     method='DELETE'
                 )
-        batch_size = 98
-        for i in range(0, len(columns_table_children_obj), batch_size):
-            batched_array = columns_table_children_obj[i:i + batch_size]
-            record_children_obj = [
-                # Table of contents
-                {
-                "object": "block",
-                "type": "table_of_contents",
-                "table_of_contents": {
-                    "color": "default"
-                }
-                },
-                # Columns
-                {
-                "object": "block",
-                "type": "heading_1",
-                "heading_1": {
-                    "rich_text": [
+            batch_size = 98
+            for i in range(0, len(columns_table_children_obj), batch_size):
+                batched_array = columns_table_children_obj[i:i + batch_size]
+                record_children_obj = [
+                    # Table of contents
                     {
-                        "type": "text",
-                        "text": { "content": "Columns" }
+                    "object": "block",
+                    "type": "table_of_contents",
+                    "table_of_contents": {
+                        "color": "default"
                     }
-                    ]
-                }
-                },
-                {
-                "object": "block",
-                "type": "table",
-                "table": {
-                    "table_width": 3,
-                    "has_column_header": True,
-                    "has_row_header": False,
-                    "children": batched_array
-                }
-                },
-                # Raw SQL
-                {
-                "object": "block",
-                "type": "heading_1",
-                "heading_1": {
-                    "rich_text": [
+                    },
+                    # Columns
                     {
-                        "type": "text",
-                        "text": { "content": "Raw SQL" }
-                    }
-                    ]
-                }
-                },
-                {
-                "object": "block",
-                "type": "code",
-                "code": {
-                    "rich_text": [
-                    {
-                        "type": "text",
-                        "text": {
-                        "content": data['raw_code'][:2000] if 'raw_code' in data else data['raw_sql'][:2000]
+                    "object": "block",
+                    "type": "heading_1",
+                    "heading_1": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": { "content": "Columns" }
                         }
+                        ]
                     }
-                    ],
-                    "language": "sql"
-                }
-                },
-                # Compiled SQL
-                {
-                "object": "block",
-                "type": "heading_1",
-                "heading_1": {
-                    "rich_text": [
+                    },
                     {
-                        "type": "text",
-                        "text": { "content": "Compiled SQL" }
+                    "object": "block",
+                    "type": "table",
+                    "table": {
+                        "table_width": 3,
+                        "has_column_header": True,
+                        "has_row_header": False,
+                        "children": batched_array
                     }
-                    ]
-                }
-                },
-                {
-                "object": "block",
-                "type": "code",
-                "code": {
-                    "rich_text": [
+                    },
+                    # Raw SQL
                     {
-                        "type": "text",
-                        "text": {
-                        "content": data['compiled_code'][:2000] if 'compiled_code' in data else data['compiled_sql'][:2000]
+                    "object": "block",
+                    "type": "heading_1",
+                    "heading_1": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": { "content": "Raw SQL" }
                         }
+                        ]
                     }
-                    ],
-                    "language": "sql"
-                }
-                }
-            ]
-            
-            # update all (create new records by overriding
-            print(f'\ncreating {model_name} record')
-            record_obj['children'] = record_children_obj
-            _record_creation_resp = make_request(
-            endpoint='pages/',
-            querystring='',
-            method='POST',
-            json=record_obj
-            )
-
-      else: 
-
-        if record_query_resp['results']:
-            print(f'\nupdating {model_name} record')
-            record_id = record_query_resp['results'][0]['id']
-            _record_update_resp = make_request(
-            endpoint=f'pages/{record_id}',
-            querystring='',
-            method='PATCH',
-            json=record_obj
-            )
-
-            # children can't be updated via record update, so we'll delete and re-add
-            record_children_resp = make_request(
-            endpoint='blocks/',
-            querystring=f'{record_id}/children',
-            method='GET'
-            )
-            for record_child in record_children_resp['results']:
-                record_child_id = record_child['id']
-                _record_child_deletion_resp = make_request(
-                    endpoint='blocks/',
-                    querystring=record_child_id,
-                    method='DELETE'
+                    },
+                    {
+                    "object": "block",
+                    "type": "code",
+                    "code": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {
+                            "content": data['raw_code'][:2000] if 'raw_code' in data else data['raw_sql'][:2000]
+                            }
+                        }
+                        ],
+                        "language": "sql"
+                    }
+                    },
+                    # Compiled SQL
+                    {
+                    "object": "block",
+                    "type": "heading_1",
+                    "heading_1": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": { "content": "Compiled SQL" }
+                        }
+                        ]
+                    }
+                    },
+                    {
+                    "object": "block",
+                    "type": "code",
+                    "code": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {
+                            "content": data['compiled_code'][:2000] if 'compiled_code' in data else data['compiled_sql'][:2000]
+                            }
+                        }
+                        ],
+                        "language": "sql"
+                    }
+                    }
+                ]
+                
+                # update all (create new records by overriding
+                _record_children_replacement_resp = make_request(
+                endpoint='blocks/',
+                querystring=f'{record_id}/children',
+                method='PATCH',
+                json={"children": record_children_obj}
                 )
-
-            _record_children_replacement_resp = make_request(
-            endpoint='blocks/',
-            querystring=f'{record_id}/children',
-            method='PATCH',
-            json={"children": record_children_obj}
-            )
-
         else:
-            print(f'\ncreating {model_name} record')
-            record_obj['children'] = record_children_obj
-            _record_creation_resp = make_request(
-            endpoint='pages/',
-            querystring='',
-            method='POST',
-            json=record_obj
-            )
+          print(f'\nupdating {model_name} record')
+          record_id = record_query_resp['results'][0]['id']
+          _record_update_resp = make_request(
+          endpoint=f'pages/{record_id}',
+          querystring='',
+          method='PATCH',
+          json=record_obj
+          )
+
+          # children can't be updated via record update, so we'll delete and re-add
+          record_children_resp = make_request(
+          endpoint='blocks/',
+          querystring=f'{record_id}/children',
+          method='GET'
+          )
+          for record_child in record_children_resp['results']:
+              record_child_id = record_child['id']
+              _record_child_deletion_resp = make_request(
+                  endpoint='blocks/',
+                  querystring=record_child_id,
+                  method='DELETE'
+              )
+
+          _record_children_replacement_resp = make_request(
+          endpoint='blocks/',
+          querystring=f'{record_id}/children',
+          method='PATCH',
+          json={"children": record_children_obj}
+          )
+      else:
+        print(f'\ncreating {model_name} record')
+        record_obj['children'] = record_children_obj
+        _record_creation_resp = make_request(
+        endpoint='pages/',
+        querystring='',
+        method='POST',
+        json=record_obj
+        )
         
 if __name__ == '__main__':
   main()
