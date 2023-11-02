@@ -2,12 +2,14 @@ import json
 import os
 import sys
 import time
+
 import requests
 
 DATABASE_PARENT_ID = os.environ['DATABASE_PARENT_ID']
 DATABASE_NAME = os.environ['DATABASE_NAME']
 NOTION_TOKEN = os.environ['NOTION_TOKEN']
 NUMERIC_ZERO_VALUE = -1
+
 MANIFEST_PATH = os.environ['MANIFEST_PATH']
 CATALOG_PATH = os.environ['CATALOG_PATH']
 
@@ -30,6 +32,7 @@ def make_request(endpoint, querystring='', method='GET', **request_kwargs):
 
   return resp.json()
 
+
 def get_paths_or_empty(parent_object, paths_array, zero_value=''):
   """Used for catalog_nodes accesses, since structure is variable"""
   for path in paths_array:
@@ -43,6 +46,7 @@ def get_paths_or_empty(parent_object, paths_array, zero_value=''):
       return obj
 
   return zero_value
+
 
 def get_owner(data, catalog_nodes, model_name):
   """
@@ -451,109 +455,108 @@ def main():
                     querystring=record_child_id,
                     method='DELETE'
                 )
-        else:
-          batch_size = 98
-          for i in range(0, len(columns_table_children_obj), batch_size):
-              batched_array = columns_table_children_obj[i:i + batch_size]
-              record_children_obj = [
-                  # Table of contents
-                  {
-                  "object": "block",
-                  "type": "table_of_contents",
-                  "table_of_contents": {
-                      "color": "default"
-                  }
-                  },
-                  # Columns
-                  {
-                  "object": "block",
-                  "type": "heading_1",
-                  "heading_1": {
-                      "rich_text": [
-                      {
-                          "type": "text",
-                          "text": { "content": "Columns" }
-                      }
-                      ]
-                  }
-                  },
-                  {
-                  "object": "block",
-                  "type": "table",
-                  "table": {
-                      "table_width": 3,
-                      "has_column_header": True,
-                      "has_row_header": False,
-                      "children": batched_array
-                  }
-                  },
-                  # Raw SQL
-                  {
-                  "object": "block",
-                  "type": "heading_1",
-                  "heading_1": {
-                      "rich_text": [
-                      {
-                          "type": "text",
-                          "text": { "content": "Raw SQL" }
-                      }
-                      ]
-                  }
-                  },
-                  {
-                  "object": "block",
-                  "type": "code",
-                  "code": {
-                      "rich_text": [
-                      {
-                          "type": "text",
-                          "text": {
-                          "content": data['raw_code'][:2000] if 'raw_code' in data else data['raw_sql'][:2000]
-                          }
-                      }
-                      ],
-                      "language": "sql"
-                  }
-                  },
-                  # Compiled SQL
-                  {
-                  "object": "block",
-                  "type": "heading_1",
-                  "heading_1": {
-                      "rich_text": [
-                      {
-                          "type": "text",
-                          "text": { "content": "Compiled SQL" }
-                      }
-                      ]
-                  }
-                  },
-                  {
-                  "object": "block",
-                  "type": "code",
-                  "code": {
-                      "rich_text": [
-                      {
-                          "type": "text",
-                          "text": {
-                          "content": data['compiled_code'][:2000] if 'compiled_code' in data else data['compiled_sql'][:2000]
-                          }
-                      }
-                      ],
-                      "language": "sql"
-                  }
-                  }
-              ]
-
-              # update all (create new records by overriding
-              print(f'\ncreating {model_name} record')
-              record_obj['children'] = record_children_obj
-              _record_creation_resp = make_request(
-              endpoint='pages/',
-              querystring='',
-              method='POST',
-              json=record_obj
-              )
+        batch_size = 98
+        for i in range(0, len(columns_table_children_obj), batch_size):
+            batched_array = columns_table_children_obj[i:i + batch_size]
+            record_children_obj = [
+                # Table of contents
+                {
+                "object": "block",
+                "type": "table_of_contents",
+                "table_of_contents": {
+                    "color": "default"
+                }
+                },
+                # Columns
+                {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {
+                    "rich_text": [
+                    {
+                        "type": "text",
+                        "text": { "content": "Columns" }
+                    }
+                    ]
+                }
+                },
+                {
+                "object": "block",
+                "type": "table",
+                "table": {
+                    "table_width": 3,
+                    "has_column_header": True,
+                    "has_row_header": False,
+                    "children": batched_array
+                }
+                },
+                # Raw SQL
+                {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {
+                    "rich_text": [
+                    {
+                        "type": "text",
+                        "text": { "content": "Raw SQL" }
+                    }
+                    ]
+                }
+                },
+                {
+                "object": "block",
+                "type": "code",
+                "code": {
+                    "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                        "content": data['raw_code'][:2000] if 'raw_code' in data else data['raw_sql'][:2000]
+                        }
+                    }
+                    ],
+                    "language": "sql"
+                }
+                },
+                # Compiled SQL
+                {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {
+                    "rich_text": [
+                    {
+                        "type": "text",
+                        "text": { "content": "Compiled SQL" }
+                    }
+                    ]
+                }
+                },
+                {
+                "object": "block",
+                "type": "code",
+                "code": {
+                    "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                        "content": data['compiled_code'][:2000] if 'compiled_code' in data else data['compiled_sql'][:2000]
+                        }
+                    }
+                    ],
+                    "language": "sql"
+                }
+                }
+            ]
+            
+            # update all (create new records by overriding
+            print(f'\ncreating {model_name} record')
+            record_obj['children'] = record_children_obj
+            _record_creation_resp = make_request(
+            endpoint='pages/',
+            querystring='',
+            method='POST',
+            json=record_obj
+            )
 
       else: 
 
