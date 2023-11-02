@@ -683,7 +683,7 @@ def main():
             
                     
                 print(f'\ncreating {model_name} record')
-                record_obj['children'] = batched_array
+                record_obj['children'] = record_children_obj
                 _record_creation_resp = make_request(
                 endpoint='pages/',
                 querystring='',
