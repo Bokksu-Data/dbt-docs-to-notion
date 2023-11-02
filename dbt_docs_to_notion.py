@@ -553,7 +553,7 @@ def main():
                 endpoint='blocks/',
                 querystring=f'{record_id}/children',
                 method='PATCH',
-                json={"children": record_children_obj}
+                json={"children": batched_array}
                 )
         else:
           print(f'\nupdating {model_name} record')
