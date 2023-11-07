@@ -428,9 +428,9 @@ def main():
         method='POST',
         json=query_obj
       )
-      record_id = record_query_resp['results'][0]['id']
 
       if record_query_resp['results']:
+        record_id = record_query_resp['results'][0]['id']
         if len(columns_table_children_obj) >= 100:
 
             # first delete all current records
