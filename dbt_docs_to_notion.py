@@ -428,6 +428,7 @@ def main():
         method='POST',
         json=query_obj
       )
+      record_id = record_query_resp['results'][0]['id']
 
       if record_query_resp['results']:
         if len(columns_table_children_obj) >= 100:
@@ -435,7 +436,6 @@ def main():
             # first delete all current records
             
             print(f'\nupdating {model_name} record')
-            record_id = record_query_resp['results'][0]['id']
             _record_update_resp = make_request(
             endpoint=f'pages/{record_id}',
             querystring='',
@@ -558,7 +558,6 @@ def main():
                 )
         else:
           print(f'\nupdating {model_name} record')
-          record_id = record_query_resp['results'][0]['id']
           _record_update_resp = make_request(
           endpoint=f'pages/{record_id}',
           querystring='',
@@ -681,15 +680,22 @@ def main():
                     }
                 ]
             
-                    
-                print(f'\ncreating {model_name} record')
-                record_obj['children'] = record_children_obj
-                _record_creation_resp = make_request(
-                endpoint='pages/',
-                querystring='',
-                method='POST',
-                json=record_obj
-                )
+                if i == 0:
+                  print(f'\ncreating {model_name} record')
+                  record_obj['children'] = record_children_obj
+                  _record_creation_resp = make_request(
+                  endpoint='pages/',
+                  querystring='',
+                  method='POST',
+                  json=record_obj
+                  )
+                else:
+                  _record_children_replacement_resp = make_request(
+                  endpoint='blocks/',
+                  querystring=f'{record_id}/children',
+                  method='PATCH',
+                  json={"children": record_children_obj}
+                  )
         else:          
             print(f'\ncreating {model_name} record')
             record_obj['children'] = record_children_obj
