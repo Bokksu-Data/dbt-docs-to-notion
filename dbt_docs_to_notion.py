@@ -587,6 +587,7 @@ def main():
           )
       else:
         if len(columns_table_children_obj) >= 100:
+            
             batch_size = 98
             for i in range(0, len(columns_table_children_obj), batch_size):
                 batched_array = columns_table_children_obj[i:i + batch_size]
@@ -681,6 +682,7 @@ def main():
                 ]
             
                 if i == 0:
+                  # add first record 
                   print(f'\ncreating {model_name} record')
                   record_obj['children'] = record_children_obj
                   _record_creation_resp = make_request(
@@ -689,7 +691,18 @@ def main():
                   method='POST',
                   json=record_obj
                   )
+                  # get record_id of first record to update in a loop for models with cols >= 100 (else statement)
+                  record_query_resp = make_request(
+                  endpoint='databases/',
+                  querystring=f'{database_id}/query',
+                  method='POST',
+                  json=query_obj
+                  )
+                  
+                  record_id = record_query_resp['results'][0]['id']
+
                 else:
+                  # append batched row data to model 
                   _record_children_replacement_resp = make_request(
                   endpoint='blocks/',
                   querystring=f'{record_id}/children',
