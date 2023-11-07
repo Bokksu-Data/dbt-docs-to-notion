@@ -460,102 +460,147 @@ def main():
             batch_size = 98
             for i in range(0, len(columns_table_children_obj), batch_size):
                 batched_array = columns_table_children_obj[i:i + batch_size]
-                record_children_obj = [
-                    # Table of contents
-                    {
-                    "object": "block",
-                    "type": "table_of_contents",
-                    "table_of_contents": {
-                        "color": "default"
-                    }
-                    },
-                    # Columns
-                    {
-                    "object": "block",
-                    "type": "heading_1",
-                    "heading_1": {
-                        "rich_text": [
-                        {
-                            "type": "text",
-                            "text": { "content": "Columns" }
-                        }
-                        ]
-                    }
-                    },
-                    {
-                    "object": "block",
-                    "type": "table",
-                    "table": {
-                        "table_width": 3,
-                        "has_column_header": True,
-                        "has_row_header": False,
-                        "children": batched_array
-                    }
-                    },
-                    # Raw SQL
-                    {
-                    "object": "block",
-                    "type": "heading_1",
-                    "heading_1": {
-                        "rich_text": [
-                        {
-                            "type": "text",
-                            "text": { "content": "Raw SQL" }
-                        }
-                        ]
-                    }
-                    },
-                    {
-                    "object": "block",
-                    "type": "code",
-                    "code": {
-                        "rich_text": [
-                        {
-                            "type": "text",
-                            "text": {
-                            "content": data['raw_code'][:2000] if 'raw_code' in data else data['raw_sql'][:2000]
-                            }
-                        }
-                        ],
-                        "language": "sql"
-                    }
-                    },
-                    # Compiled SQL
-                    {
-                    "object": "block",
-                    "type": "heading_1",
-                    "heading_1": {
-                        "rich_text": [
-                        {
-                            "type": "text",
-                            "text": { "content": "Compiled SQL" }
-                        }
-                        ]
-                    }
-                    },
-                    {
-                    "object": "block",
-                    "type": "code",
-                    "code": {
-                        "rich_text": [
-                        {
-                            "type": "text",
-                            "text": {
-                            "content": data['compiled_code'][:2000] if 'compiled_code' in data else data['compiled_sql'][:2000]
-                            }
-                        }
-                        ],
-                        "language": "sql"
-                    }
-                    }
-                ]
+                if i == 0: 
+                  record_children_obj = [
+                      # Table of contents
+                      {
+                      "object": "block",
+                      "type": "table_of_contents",
+                      "table_of_contents": {
+                          "color": "default"
+                      }
+                      },
+                      # Columns
+                      {
+                      "object": "block",
+                      "type": "heading_1",
+                      "heading_1": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": { "content": "Columns" }
+                          }
+                          ]
+                      }
+                      },
+                      {
+                      "object": "block",
+                      "type": "table",
+                      "table": {
+                          "table_width": 3,
+                          "has_column_header": True,
+                          "has_row_header": False,
+                          "children": batched_array
+                      }
+                      },
+                      # Raw SQL
+                      {
+                      "object": "block",
+                      "type": "heading_1",
+                      "heading_1": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": { "content": "Raw SQL" }
+                          }
+                          ]
+                      }
+                      },
+                      {
+                      "object": "block",
+                      "type": "code",
+                      "code": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": {
+                              "content": data['raw_code'][:2000] if 'raw_code' in data else data['raw_sql'][:2000]
+                              }
+                          }
+                          ],
+                          "language": "sql"
+                      }
+                      },
+                      # Compiled SQL
+                      {
+                      "object": "block",
+                      "type": "heading_1",
+                      "heading_1": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": { "content": "Compiled SQL" }
+                          }
+                          ]
+                      }
+                      },
+                      {
+                      "object": "block",
+                      "type": "code",
+                      "code": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": {
+                              "content": data['compiled_code'][:2000] if 'compiled_code' in data else data['compiled_sql'][:2000]
+                              }
+                          }
+                          ],
+                          "language": "sql"
+                      }
+                      }
+                  ]
                 
-                _record_children_replacement_resp = make_request(
-                endpoint='blocks/',
-                querystring=f'{record_id}/children',
-                method='PATCH',
-                json={"children": record_children_obj}
-                )
+                  
+                  _record_children_replacement_resp = make_request(
+                  endpoint='blocks/',
+                  querystring=f'{record_id}/children',
+                  method='PATCH',
+                  json={"children": record_children_obj}
+                  )
+
+                else:
+                  record_children_obj = [
+                      # Table of contents
+                      {
+                      "object": "block",
+                      "type": "table_of_contents",
+                      "table_of_contents": {
+                          "color": "default"
+                      }
+                      },
+                      # Columns
+                      {
+                      "object": "block",
+                      "type": "heading_1",
+                      "heading_1": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": { "content": "Columns" }
+                          }
+                          ]
+                      }
+                      },
+                      {
+                      "object": "block",
+                      "type": "table",
+                      "table": {
+                          "table_width": 3,
+                          "has_column_header": True,
+                          "has_row_header": False,
+                          "children": batched_array
+                      }
+                      }  
+                  ]
+                  
+                  _record_children_replacement_resp = make_request(
+                  endpoint='blocks/',
+                  querystring=f'{record_id}/children',
+                  method='PATCH',
+                  json={"children": record_children_obj}
+                  )
+                  
         else:
           print(f'\nupdating {model_name} record')
           _record_update_resp = make_request(
@@ -591,7 +636,9 @@ def main():
             batch_size = 98
             for i in range(0, len(columns_table_children_obj), batch_size):
                 batched_array = columns_table_children_obj[i:i + batch_size]
-                record_children_obj = [
+        
+                if i == 0:
+                  record_children_obj = [
                     # Table of contents
                     {
                     "object": "block",
@@ -679,9 +726,7 @@ def main():
                         "language": "sql"
                     }
                     }
-                ]
-            
-                if i == 0:
+                  ]
                   # add first record 
                   print(f'\ncreating {model_name} record')
                   record_obj['children'] = record_children_obj
@@ -702,6 +747,40 @@ def main():
                   record_id = record_query_resp['results'][0]['id']
 
                 else:
+                  record_children_obj = [
+                    # Table of contents
+                    {
+                    "object": "block",
+                    "type": "table_of_contents",
+                    "table_of_contents": {
+                        "color": "default"
+                    }
+                    },
+                    # Columns
+                    {
+                    "object": "block",
+                    "type": "heading_1",
+                    "heading_1": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": { "content": "Columns" }
+                        }
+                        ]
+                    }
+                    },
+                    {
+                    "object": "block",
+                    "type": "table",
+                    "table": {
+                        "table_width": 3,
+                        "has_column_header": True,
+                        "has_row_header": False,
+                        "children": batched_array
+                    }
+                    }
+                  ]
+                  
                   # append batched row data to model 
                   _record_children_replacement_resp = make_request(
                   endpoint='blocks/',
