@@ -248,29 +248,7 @@ def main():
             "color": "default"
           }
         },
-        # Columns
-        {
-          "object": "block",
-          "type": "heading_1",
-          "heading_1": {
-            "rich_text": [
-              {
-                "type": "text",
-                "text": { "content": "Columns" }
-              }
-            ]
-          }
-        },
-        {
-          "object": "block",
-          "type": "table",
-          "table": {
-            "table_width": 3,
-            "has_column_header": True,
-            "has_row_header": False,
-            "children": columns_table_children_obj
-          }
-        },
+        
         # Raw SQL
         {
           "object": "block",
@@ -299,6 +277,7 @@ def main():
             "language": "sql"
           }
         },
+        
         # Compiled SQL
         {
           "object": "block",
@@ -326,11 +305,33 @@ def main():
             ],
             "language": "sql"
           }
+        },
+        
+        # Columns
+        {
+          "object": "block",
+          "type": "heading_1",
+          "heading_1": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": { "content": "Columns" }
+              }
+            ]
+          }
+        },
+        {
+          "object": "block",
+          "type": "table",
+          "table": {
+            "table_width": 3,
+            "has_column_header": True,
+            "has_row_header": False,
+            "children": columns_table_children_obj
+          }
         }
       ]
-      
     
-
       record_obj = {
         "parent": {
           "database_id": database_id
@@ -432,9 +433,7 @@ def main():
       if record_query_resp['results']:
         record_id = record_query_resp['results'][0]['id']
         if len(columns_table_children_obj) >= 100:
-
             # first delete all current records
-            
             print(f'\nupdating {model_name} record')
             _record_update_resp = make_request(
             endpoint=f'pages/{record_id}',
@@ -457,7 +456,7 @@ def main():
                     querystring=record_child_id,
                     method='DELETE'
                 )
-            batch_size = 50
+            batch_size = 98
             for i in range(0, len(columns_table_children_obj), batch_size):
                 batched_array = columns_table_children_obj[i:i + batch_size]
                 if i == 0: 
@@ -470,29 +469,7 @@ def main():
                           "color": "default"
                       }
                       },
-                      # Columns
-                      {
-                      "object": "block",
-                      "type": "heading_1",
-                      "heading_1": {
-                          "rich_text": [
-                          {
-                              "type": "text",
-                              "text": { "content": "Columns" }
-                          }
-                          ]
-                      }
-                      },
-                      {
-                      "object": "block",
-                      "type": "table",
-                      "table": {
-                          "table_width": 3,
-                          "has_column_header": True,
-                          "has_row_header": False,
-                          "children": batched_array
-                      }
-                      },
+                      
                       # Raw SQL
                       {
                       "object": "block",
@@ -521,6 +498,7 @@ def main():
                           "language": "sql"
                       }
                       },
+                      
                       # Compiled SQL
                       {
                       "object": "block",
@@ -533,7 +511,7 @@ def main():
                           }
                           ]
                       }
-                      },
+                      },   
                       {
                       "object": "block",
                       "type": "code",
@@ -548,10 +526,33 @@ def main():
                           ],
                           "language": "sql"
                       }
+                      },
+                      
+                      # Columns
+                      {
+                      "object": "block",
+                      "type": "heading_1",
+                      "heading_1": {
+                          "rich_text": [
+                          {
+                              "type": "text",
+                              "text": { "content": "Columns" }
+                          }
+                          ]
+                      }
+                      },
+                      {
+                      "object": "block",
+                      "type": "table",
+                      "table": {
+                          "table_width": 3,
+                          "has_column_header": True,
+                          "has_row_header": False,
+                          "children": batched_array
+                      }
                       }
                   ]
-                
-                  
+            
                   _record_children_replacement_resp = make_request(
                   endpoint='blocks/',
                   querystring=f'{record_id}/children',
@@ -647,29 +648,7 @@ def main():
                         "color": "default"
                     }
                     },
-                    # Columns
-                    {
-                    "object": "block",
-                    "type": "heading_1",
-                    "heading_1": {
-                        "rich_text": [
-                        {
-                            "type": "text",
-                            "text": { "content": "Columns" }
-                        }
-                        ]
-                    }
-                    },
-                    {
-                    "object": "block",
-                    "type": "table",
-                    "table": {
-                        "table_width": 3,
-                        "has_column_header": True,
-                        "has_row_header": False,
-                        "children": batched_array
-                    }
-                    },
+                    
                     # Raw SQL
                     {
                     "object": "block",
@@ -698,6 +677,7 @@ def main():
                         "language": "sql"
                     }
                     },
+                    
                     # Compiled SQL
                     {
                     "object": "block",
@@ -724,6 +704,30 @@ def main():
                         }
                         ],
                         "language": "sql"
+                    }
+                    },
+                    
+                    # Columns
+                    {
+                    "object": "block",
+                    "type": "heading_1",
+                    "heading_1": {
+                        "rich_text": [
+                        {
+                            "type": "text",
+                            "text": { "content": "Columns" }
+                        }
+                        ]
+                    }
+                    },
+                    {
+                    "object": "block",
+                    "type": "table",
+                    "table": {
+                        "table_width": 3,
+                        "has_column_header": True,
+                        "has_row_header": False,
+                        "children": batched_array
                     }
                     }
                   ]
