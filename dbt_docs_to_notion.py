@@ -457,7 +457,7 @@ def main():
                     querystring=record_child_id,
                     method='DELETE'
                 )
-            batch_size = 98
+            batch_size = 50
             for i in range(0, len(columns_table_children_obj), batch_size):
                 batched_array = columns_table_children_obj[i:i + batch_size]
                 if i == 0: 
